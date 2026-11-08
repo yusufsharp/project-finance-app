@@ -31,3 +31,31 @@ docker compose exec broker rabbitmq-diagnostics -q ping
 ```
 
 Остановить стенд можно командой `docker compose down`. Данные PostgreSQL остаются в именованном томе.
+
+## ДЗ 3. Запись операции, кэш и события
+
+Соберите обновлённый стенд командой `docker compose up --build -d --wait`.
+
+Создайте расход:
+
+```sh
+curl -i -X POST http://127.0.0.1:8080/operations \
+  -H 'Content-Type: application/json' \
+  -d '{"amount":"450.50","category":"Продукты"}'
+```
+
+Ожидается HTTP 201 с UUID в поле `id`. Подставьте этот UUID вместо `ID` в следующие команды:
+
+```sh
+curl -i http://127.0.0.1:8080/operations/ID
+curl -i http://127.0.0.1:8080/operations/ID
+docker compose exec db psql -U finance -d finance -c 'SELECT * FROM operations;'
+docker compose exec cache redis-cli GET operation:ID
+docker compose logs operations
+```
+
+Первый GET возвращает заголовок `X-Data-Source: database` и заполняет Redis. Повторный GET возвращает `X-Data-Source: cache`. Кэш хранится 300 секунд. POST сбрасывает ключ новой операции. Несуществующая операция возвращает 404, некорректная сумма или категория — 400. Сумма должна быть положительной, меньше триллиона и содержать до двух знаков после запятой.
+
+Операция и событие записываются одной транзакцией в таблицы `operations` и `outbox`. Фоновый обработчик публикует событие в устойчивую очередь RabbitMQ `operation.created`, получает подтверждение брокера и удаляет запись из outbox. Затем читает сообщения из очереди, записывает их в журнал и подтверждает обработку. В журнале ищите строки `Published operation.created` и `Consumed operation.created` с UUID созданного расхода.
+
+При временной недоступности брокера события остаются в outbox и отправляются после восстановления соединения. Доставка допускает повторения. При сбое Redis чтение выполняется из PostgreSQL. Для демонстрации используется один экземпляр сервиса с фоновым обработчиком. Повторный POST создаёт новую операцию.

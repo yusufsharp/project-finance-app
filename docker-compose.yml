@@ -1,6 +1,17 @@
 services:
   operations:
     build: ./operations
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      RABBITMQ_USER: finance
+      RABBITMQ_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
     ports:
       - "127.0.0.1:8080:8080"
     healthcheck:
@@ -33,6 +44,11 @@ services:
 
   broker:
     image: rabbitmq:4-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: finance
+      RABBITMQ_DEFAULT_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - broker-data:/var/lib/rabbitmq
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -41,3 +57,4 @@ services:
 
 volumes:
   db-data:
+  broker-data:
