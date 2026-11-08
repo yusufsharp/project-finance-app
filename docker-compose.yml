@@ -1,0 +1,43 @@
+services:
+  operations:
+    build: ./operations
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/', timeout=2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: finance
+      POSTGRES_USER: finance
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD before starting Compose}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "finance", "-d", "finance"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  cache:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  broker:
+    image: rabbitmq:4-alpine
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 8s
+      retries: 12
+
+volumes:
+  db-data:

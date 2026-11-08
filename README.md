@@ -6,4 +6,28 @@
 
 [Описание проекта и требования ДЗ 1–5](HOMEWORK.md)
 
-Сейчас в репозитории есть описание проекта. Ближайшая задача по ДЗ 2 — поднять микросервис с ответом-заглушкой, базу данных, кэш и брокер сообщений.
+## ДЗ 2. Запуск стенда
+
+Потребуются Docker с Compose и свободный порт 8080. Выполняйте команды из корня репозитория. Один раз создайте файл `.env` с паролем для локальной БД:
+
+```sh
+test -f .env || echo "POSTGRES_PASSWORD=$(openssl rand -hex 24)" > .env
+```
+
+Запустите четыре компонента и дождитесь готовности:
+
+```sh
+docker compose up --build -d --wait
+docker compose ps
+curl -fsS http://127.0.0.1:8080/
+```
+
+В выводе `ps` ожидаются четыре сервиса со статусом `healthy`: `operations` (микросервис операций), `db` (PostgreSQL), `cache` (Redis) и `broker` (RabbitMQ). Запрос к микросервису возвращает `{"message":"Hello, world!"}`. Для проверки остальных компонентов:
+
+```sh
+docker compose exec db psql -U finance -d finance -c 'SELECT 1;'
+docker compose exec cache redis-cli ping
+docker compose exec broker rabbitmq-diagnostics -q ping
+```
+
+Остановить стенд можно командой `docker compose down`. Данные PostgreSQL остаются в именованном томе.
