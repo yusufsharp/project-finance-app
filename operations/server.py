@@ -71,11 +71,6 @@ def events():
                             )
                             conn.execute("DELETE FROM outbox WHERE id = %s", (row["id"],))
                             logging.info("Published operation.created %s", row["id"])
-                    method, properties, body = channel.basic_get(queue=QUEUE, auto_ack=False)
-                    if method:
-                        # Logging is safe to repeat when a delivery is retried.
-                        logging.info("Consumed operation.created %s", body.decode())
-                        channel.basic_ack(method.delivery_tag)
                     connection.process_data_events(time_limit=0.2)
                     time.sleep(0.2)
             finally:
