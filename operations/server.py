@@ -15,12 +15,14 @@ from psycopg.rows import dict_row
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 cache = redis.Redis(host="cache", socket_timeout=2, socket_connect_timeout=2, decode_responses=True)
 QUEUE = "operation.created"
+QUEUE_ARGUMENTS = {"x-queue-type": os.environ["RABBITMQ_QUEUE_TYPE"]} if os.environ.get("RABBITMQ_QUEUE_TYPE") else None
 
 
 def database():
     return psycopg.connect(
         host="db", dbname="finance", user="finance",
         password=os.environ["POSTGRES_PASSWORD"], connect_timeout=3,
+        target_session_attrs="read-write", options="-c statement_timeout=5000",
         row_factory=dict_row,
     )
 
@@ -55,7 +57,7 @@ def events():
             ))
             try:
                 channel = connection.channel()
-                channel.queue_declare(queue=QUEUE, durable=True)
+                channel.queue_declare(queue=QUEUE, durable=True, arguments=QUEUE_ARGUMENTS)
                 channel.confirm_delivery()
                 while True:
                     # Delete only after broker confirmation. A retry can deliver duplicates.
@@ -93,6 +95,14 @@ class OperationsHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
+        if self.path == "/health/ready":
+            try:
+                with database() as conn:
+                    conn.execute("SELECT 1")
+                self.respond(200, {"ready": True})
+            except psycopg.Error:
+                self.respond(503, {"ready": False})
+            return
         if self.path == "/":
             self.respond(200, {"message": "Hello, world!"})
             return
@@ -179,6 +189,15 @@ class OperationsHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    initialize()
+    # The HTTP server starts only after the initial primary is reachable.
+    for attempt in range(30):
+        try:
+            initialize()
+            break
+        except psycopg.Error:
+            if attempt == 29:
+                raise
+            logging.warning("Waiting for database primary")
+            time.sleep(2)
     threading.Thread(target=events, daemon=True).start()
     ThreadingHTTPServer(("0.0.0.0", 8080), OperationsHandler).serve_forever()

@@ -1,0 +1,45 @@
+scope: finance-ha
+namespace: /service/
+restapi:
+  listen: 0.0.0.0:8008
+etcd3:
+  hosts: etcd1:2379,etcd2:2379,etcd3:2379
+bootstrap:
+  dcs:
+    ttl: 20
+    loop_wait: 3
+    retry_timeout: 3
+    maximum_lag_on_failover: 1048576
+    check_timeline: true
+    synchronous_mode: true
+    synchronous_mode_strict: true
+    synchronous_node_count: 1
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_level: replica
+        hot_standby: 'on'
+        wal_log_hints: 'on'
+        synchronous_commit: 'on'
+        max_wal_senders: 10
+        max_replication_slots: 10
+        wal_keep_size: 128MB
+        password_encryption: scram-sha-256
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+    - auth-host: scram-sha-256
+    - auth-local: trust
+  post_bootstrap: /usr/local/bin/bootstrap-db.sh
+postgresql:
+  listen: 0.0.0.0:5432
+  data_dir: /var/lib/postgresql/patroni/data
+  pgpass: /tmp/pgpass
+  pg_hba:
+    - local replication replicator trust
+    - local all all trust
+    - host replication replicator 127.0.0.1/32 scram-sha-256
+    - host all all 127.0.0.1/32 trust
+    - host replication replicator 172.29.20.0/24 scram-sha-256
+    - host all all 172.29.20.0/24 scram-sha-256

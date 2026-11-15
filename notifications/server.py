@@ -23,7 +23,8 @@ def consume():
             ))
             try:
                 channel = connection.channel()
-                channel.queue_declare(queue="operation.created", durable=True)
+                arguments = {"x-queue-type": os.environ["RABBITMQ_QUEUE_TYPE"]} if os.environ.get("RABBITMQ_QUEUE_TYPE") else None
+                channel.queue_declare(queue="operation.created", durable=True, arguments=arguments)
                 channel.basic_qos(prefetch_count=1)
 
                 def handle(channel, method, properties, body):

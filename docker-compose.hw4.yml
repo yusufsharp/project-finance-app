@@ -1,0 +1,121 @@
+services:
+  operations:
+    build:
+      context: .
+      dockerfile: operations/Dockerfile
+    cap_drop: [ALL]
+    cap_add: [NET_ADMIN, SETUID, SETGID]
+    security_opt: [no-new-privileges:true]
+    environment:
+      FIREWALL_ROLE: operations
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      RABBITMQ_USER: finance
+      RABBITMQ_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      edge:
+        ipv4_address: 172.29.10.10
+        gw_priority: 1
+      data:
+        ipv4_address: 172.29.20.20
+      messaging:
+        ipv4_address: 172.29.30.20
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/', timeout=2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  notifications:
+    build:
+      context: .
+      dockerfile: notifications/Dockerfile
+    cap_drop: [ALL]
+    cap_add: [NET_ADMIN, SETUID, SETGID]
+    security_opt: [no-new-privileges:true]
+    environment:
+      FIREWALL_ROLE: notifications
+      RABBITMQ_USER: finance
+      RABBITMQ_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    depends_on:
+      broker:
+        condition: service_healthy
+    networks:
+      messaging:
+        ipv4_address: 172.29.30.30
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8081/health', timeout=2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: finance
+      POSTGRES_USER: finance
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD before starting Compose}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      data:
+        ipv4_address: 172.29.20.10
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "finance", "-d", "finance"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  cache:
+    image: redis:7-alpine
+    networks:
+      data:
+        ipv4_address: 172.29.20.11
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  broker:
+    image: rabbitmq:4-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: finance
+      RABBITMQ_DEFAULT_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - broker-data:/var/lib/rabbitmq
+    networks:
+      messaging:
+        ipv4_address: 172.29.30.10
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 8s
+      retries: 12
+
+networks:
+  edge:
+    ipam:
+      config:
+        - subnet: 172.29.10.0/24
+  data:
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.29.20.0/24
+  messaging:
+    ipam:
+      config:
+        - subnet: 172.29.30.0/24
+
+volumes:
+  db-data:
+  broker-data:

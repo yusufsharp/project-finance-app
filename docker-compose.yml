@@ -1,8 +1,60 @@
+x-etcd: &etcd
+  image: quay.io/coreos/etcd:v3.5.21
+  restart: unless-stopped
+  entrypoint: /usr/local/bin/etcd
+  environment: &etcd-env
+    ETCD_DATA_DIR: /etcd-data
+    ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+    ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+    ETCD_INITIAL_CLUSTER: etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
+    ETCD_INITIAL_CLUSTER_TOKEN: finance-patroni-dcs
+    ETCD_INITIAL_CLUSTER_STATE: new
+    ETCD_AUTO_COMPACTION_RETENTION: '1'
+  healthcheck:
+    test: [CMD, /usr/local/bin/etcdctl, endpoint, health]
+    interval: 5s
+    timeout: 3s
+    retries: 20
+
+x-pg: &pg
+  image: finance-patroni:local
+  pull_policy: never
+  restart: unless-stopped
+  environment: &pg-env
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Run python3 scripts/start_hw5.py}
+  depends_on:
+    etcd1: {condition: service_healthy}
+    etcd2: {condition: service_healthy}
+    etcd3: {condition: service_healthy}
+  healthcheck:
+    test: [CMD, python3, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8008/health', timeout=2).close()"]
+    interval: 3s
+    timeout: 3s
+    retries: 40
+
+x-rabbit: &rabbit
+  image: rabbitmq:4-alpine
+  restart: unless-stopped
+  environment:
+    RABBITMQ_DEFAULT_USER: finance
+    RABBITMQ_DEFAULT_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:?Run python3 scripts/start_hw5.py}
+    RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: '+S 2:2'
+  volumes:
+    - ./ha/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+  healthcheck:
+    test: [CMD, rabbitmq-diagnostics, -q, check_running]
+    interval: 5s
+    timeout: 5s
+    retries: 30
+
 services:
   operations:
     build:
       context: .
       dockerfile: operations/Dockerfile
+    restart: unless-stopped
     cap_drop: [ALL]
     cap_add: [NET_ADMIN, SETUID, SETGID]
     security_opt: [no-new-privileges:true]
@@ -11,33 +63,27 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
       RABBITMQ_USER: finance
       RABBITMQ_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      RABBITMQ_QUEUE_TYPE: quorum
     depends_on:
-      db:
-        condition: service_healthy
-      cache:
-        condition: service_healthy
-      broker:
-        condition: service_healthy
-    ports:
-      - "127.0.0.1:8080:8080"
+      db: {condition: service_healthy}
+      cache: {condition: service_healthy}
+      broker: {condition: service_healthy}
+    ports: [127.0.0.1:8080:8080]
     networks:
-      edge:
-        ipv4_address: 172.29.10.10
-        gw_priority: 1
-      data:
-        ipv4_address: 172.29.20.20
-      messaging:
-        ipv4_address: 172.29.30.20
+      edge: {ipv4_address: 172.29.10.10, gw_priority: 1}
+      data: {ipv4_address: 172.29.20.20}
+      messaging: {ipv4_address: 172.29.30.20}
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/', timeout=2).close()"]
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8080/health/ready', timeout=8).close()"]
       interval: 5s
-      timeout: 3s
-      retries: 10
+      timeout: 10s
+      retries: 12
 
   notifications:
     build:
       context: .
       dockerfile: notifications/Dockerfile
+    restart: unless-stopped
     cap_drop: [ALL]
     cap_add: [NET_ADMIN, SETUID, SETGID]
     security_opt: [no-new-privileges:true]
@@ -45,77 +91,229 @@ services:
       FIREWALL_ROLE: notifications
       RABBITMQ_USER: finance
       RABBITMQ_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      RABBITMQ_QUEUE_TYPE: quorum
     depends_on:
-      broker:
-        condition: service_healthy
+      broker: {condition: service_healthy}
     networks:
-      messaging:
-        ipv4_address: 172.29.30.30
+      messaging: {ipv4_address: 172.29.30.30}
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8081/health', timeout=2).close()"]
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8081/health', timeout=2).close()"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 15
 
   db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: finance
-      POSTGRES_USER: finance
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD before starting Compose}
-    volumes:
-      - db-data:/var/lib/postgresql/data
+    image: haproxy:3.2-alpine
+    restart: unless-stopped
+    volumes: [./ha/haproxy-db.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro]
+    depends_on:
+      pg1: {condition: service_healthy}
+      pg2: {condition: service_healthy}
+      pg3: {condition: service_healthy}
     networks:
-      data:
-        ipv4_address: 172.29.20.10
+      data: {ipv4_address: 172.29.20.10}
     healthcheck:
-      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "finance", "-d", "finance"]
-      interval: 5s
+      test: [CMD, nc, -z, 127.0.0.1, '5432']
+      interval: 3s
       timeout: 3s
-      retries: 12
+      retries: 20
+
+  pg1:
+    <<: *pg
+    build:
+      context: .
+      dockerfile: ha/postgres/Dockerfile
+    hostname: pg1
+    environment:
+      <<: *pg-env
+      PATRONI_NAME: pg1
+      PATRONI_RESTAPI_CONNECT_ADDRESS: 172.29.20.12:8008
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: 172.29.20.12:5432
+    volumes: [pg1-data:/var/lib/postgresql/patroni]
+    networks:
+      data: {ipv4_address: 172.29.20.12}
+      control: {ipv4_address: 172.29.40.21}
+
+  pg2:
+    <<: *pg
+    hostname: pg2
+    environment:
+      <<: *pg-env
+      PATRONI_NAME: pg2
+      PATRONI_RESTAPI_CONNECT_ADDRESS: 172.29.20.13:8008
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: 172.29.20.13:5432
+    volumes: [pg2-data:/var/lib/postgresql/patroni]
+    networks:
+      data: {ipv4_address: 172.29.20.13}
+      control: {ipv4_address: 172.29.40.22}
+
+  pg3:
+    <<: *pg
+    hostname: pg3
+    environment:
+      <<: *pg-env
+      PATRONI_NAME: pg3
+      PATRONI_RESTAPI_CONNECT_ADDRESS: 172.29.20.16:8008
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: 172.29.20.16:5432
+    volumes: [pg3-data:/var/lib/postgresql/patroni]
+    networks:
+      data: {ipv4_address: 172.29.20.16}
+      control: {ipv4_address: 172.29.40.23}
+
+  etcd1:
+    <<: *etcd
+    hostname: etcd1
+    environment:
+      <<: *etcd-env
+      ETCD_NAME: etcd1
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd1:2379
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd1:2380
+    volumes: [etcd1-data:/etcd-data]
+    networks:
+      control: {ipv4_address: 172.29.40.11}
+
+  etcd2:
+    <<: *etcd
+    hostname: etcd2
+    environment:
+      <<: *etcd-env
+      ETCD_NAME: etcd2
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd2:2379
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd2:2380
+    volumes: [etcd2-data:/etcd-data]
+    networks:
+      control: {ipv4_address: 172.29.40.12}
+
+  etcd3:
+    <<: *etcd
+    hostname: etcd3
+    environment:
+      <<: *etcd-env
+      ETCD_NAME: etcd3
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd3:2379
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd3:2380
+    volumes: [etcd3-data:/etcd-data]
+    networks:
+      control: {ipv4_address: 172.29.40.13}
 
   cache:
     image: redis:7-alpine
+    restart: unless-stopped
     networks:
-      data:
-        ipv4_address: 172.29.20.11
+      data: {ipv4_address: 172.29.20.11}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 5s
       timeout: 3s
       retries: 10
 
   broker:
-    image: rabbitmq:4-alpine
-    environment:
-      RABBITMQ_DEFAULT_USER: finance
-      RABBITMQ_DEFAULT_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
-    volumes:
-      - broker-data:/var/lib/rabbitmq
+    image: haproxy:3.2-alpine
+    restart: unless-stopped
+    volumes: [./ha/haproxy-broker.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro]
+    depends_on:
+      rabbit1: {condition: service_healthy}
+      rabbit2: {condition: service_healthy}
+      rabbit3: {condition: service_healthy}
     networks:
-      messaging:
-        ipv4_address: 172.29.30.10
+      messaging: {ipv4_address: 172.29.30.10}
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 10s
-      timeout: 8s
-      retries: 12
+      test: [CMD, nc, -z, 127.0.0.1, '5672']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  rabbit1:
+    <<: *rabbit
+    hostname: rabbit1
+    volumes:
+      - ./ha/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - rabbit1-data:/var/lib/rabbitmq
+    networks:
+      messaging: {ipv4_address: 172.29.30.11}
+
+  rabbit2:
+    <<: *rabbit
+    hostname: rabbit2
+    volumes:
+      - ./ha/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - rabbit2-data:/var/lib/rabbitmq
+    networks:
+      messaging: {ipv4_address: 172.29.30.12}
+
+  rabbit3:
+    <<: *rabbit
+    hostname: rabbit3
+    volumes:
+      - ./ha/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - rabbit3-data:/var/lib/rabbitmq
+    networks:
+      messaging: {ipv4_address: 172.29.30.13}
+
+  db-backup:
+    build:
+      context: .
+      dockerfile: ha/backup/Dockerfile
+    restart: unless-stopped
+    entrypoint: [sh, /backup/run.sh]
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      BACKUP_INTERVAL_SECONDS: '86400'
+    depends_on:
+      db: {condition: service_healthy}
+    volumes:
+      - ./ha/backup:/backup:ro
+      - ./backups:/backups
+    networks:
+      data: {ipv4_address: 172.29.20.14}
+    healthcheck:
+      test: [CMD-SHELL, 'test -f /tmp/last-backup-ok && test ! -f /tmp/last-backup-failed && test -n "$$(find /tmp -name last-backup-ok -mmin -1500)"']
+      interval: 30s
+      timeout: 3s
+      retries: 5
+
+  db-restore:
+    image: postgres:16-alpine
+    profiles: [restore]
+    environment:
+      POSTGRES_DB: finance_restore
+      POSTGRES_USER: finance
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - restore-data:/var/lib/postgresql/data
+      - ./backups:/backups:ro
+    networks:
+      data: {ipv4_address: 172.29.20.15}
+    healthcheck:
+      test: [CMD, pg_isready, -U, finance, -d, finance_restore]
+      interval: 3s
+      timeout: 3s
+      retries: 15
 
 networks:
   edge:
     ipam:
-      config:
-        - subnet: 172.29.10.0/24
+      config: [{subnet: 172.29.10.0/24}]
   data:
     internal: true
     ipam:
-      config:
-        - subnet: 172.29.20.0/24
+      config: [{subnet: 172.29.20.0/24}]
   messaging:
     ipam:
-      config:
-        - subnet: 172.29.30.0/24
+      config: [{subnet: 172.29.30.0/24}]
+  control:
+    internal: true
+    ipam:
+      config: [{subnet: 172.29.40.0/24}]
 
 volumes:
-  db-data:
-  broker-data:
+  pg1-data:
+  pg2-data:
+  pg3-data:
+  etcd1-data:
+  etcd2-data:
+  etcd3-data:
+  rabbit1-data:
+  rabbit2-data:
+  rabbit3-data:
+  restore-data:
