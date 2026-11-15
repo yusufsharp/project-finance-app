@@ -1,0 +1,102 @@
+{
+  "allow-deny": [
+    1280,
+    720
+  ],
+  "frontend-form": [
+    537,
+    765
+  ],
+  "ha-summary": [
+    1280,
+    720
+  ],
+  "update": [
+    1280,
+    720
+  ],
+  "ipv6": [
+    1280,
+    720
+  ],
+  "frontend-desktop": [
+    1280,
+    1374
+  ],
+  "notifications-nat": [
+    1280,
+    720
+  ],
+  "broker-ha": [
+    1280,
+    720
+  ],
+  "build": [
+    1280,
+    720
+  ],
+  "operations-filter": [
+    1280,
+    720
+  ],
+  "cache": [
+    1280,
+    720
+  ],
+  "notifications-filter": [
+    1280,
+    720
+  ],
+  "database-rejoin": [
+    1280,
+    720
+  ],
+  "events": [
+    1280,
+    720
+  ],
+  "create": [
+    1280,
+    720
+  ],
+  "backup": [
+    1280,
+    720
+  ],
+  "networks": [
+    1280,
+    720
+  ],
+  "database-ha": [
+    1280,
+    720
+  ],
+  "delete": [
+    1280,
+    720
+  ],
+  "schema": [
+    1280,
+    720
+  ],
+  "validation": [
+    1280,
+    720
+  ],
+  "fw-outage": [
+    1280,
+    720
+  ],
+  "deployment": [
+    1280,
+    720
+  ],
+  "operations-nat": [
+    1280,
+    720
+  ],
+  "frontend": [
+    537,
+    765
+  ]
+}

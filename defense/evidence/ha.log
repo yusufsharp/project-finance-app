@@ -1,0 +1,10 @@
+DATABASE primary=pg3, 2 streaming replicas, one synchronous
+CRASH pg3: SIGKILL, exit=137
+DATABASE FAILOVER pg3 -> pg1: 20.922s; uncached operation preserved
+REJOIN pg3: restarted, policy=unless-stopped
+BROKER leader=rabbit2; confirmed event f759a759-d918-4a2d-9432-743795b8adf8 waits without a consumer
+CRASH rabbit2: SIGKILL, exit=137
+BROKER FAILOVER rabbit2 -> rabbit1: 8.978s; confirmed and new events consumed
+REJOIN rabbit2: restarted, policy=unless-stopped
+BACKUP finance-20261115T124842Z-244.dump: SHA-256 OK; restored into verify_7b5d010d52d64d99975ea2c4bf6dd1c8; all rows match, 1.128s
+ДЗ 5: all checks passed

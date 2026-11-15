@@ -1,6 +1,7 @@
 .git
 .env
 docs
+defense
 backups
 output
 __pycache__

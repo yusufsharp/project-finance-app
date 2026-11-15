@@ -1,0 +1,32 @@
+{
+  "started_at": "2026-11-15T19:47:58.086527+07:00",
+  "checks": {
+    "database": {
+      "old_primary": "pg3",
+      "new_primary": "pg1",
+      "rto_seconds": 20.922,
+      "target_seconds": 45,
+      "preserved_operation": "e0fc8a16-c32f-4c82-8cd6-480cceef5691",
+      "read_source": "database"
+    },
+    "broker": {
+      "old_leader": "rabbit2",
+      "new_leader": "rabbit1",
+      "rto_seconds": 8.978,
+      "target_seconds": 30,
+      "confirmed_event_survived": "f759a759-d918-4a2d-9432-743795b8adf8",
+      "post_crash_event": "73f29c1d-1518-4ea5-8c78-12290578f240"
+    },
+    "backup_restore": {
+      "archive": "finance-20261115T125027Z-325.dump",
+      "sha256": "2bcec855430d2d8b93766efbb0c81aee6736f867432ca2e6fcfca11a0d245112",
+      "restored_database": "verify_7533ac81945e46c49541490b0529e56f",
+      "matching_fingerprint": "21:c924c416961f7d52bf08442f6177434a",
+      "restore_seconds": 4.148,
+      "target_seconds": 60,
+      "condition": "restore container stopped, images already built"
+    }
+  },
+  "status": "passed",
+  "finished_at": "2026-11-15T19:50:31.304169+07:00"
+}

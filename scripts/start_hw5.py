@@ -40,7 +40,7 @@ def main():
     setup_secrets()
     compose("config", "--quiet")
     # Finish image builds before pausing the original application.
-    compose("build", "operations", "notifications", "pg1", capture=False)
+    compose("build", "operations", "notifications", "pg1", "frontend", capture=False)
     cid = compose("ps", "-q", "db").stdout.decode().strip()
     legacy = False
     if cid:

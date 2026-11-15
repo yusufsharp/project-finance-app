@@ -5,6 +5,7 @@ import threading
 import time
 import uuid
 from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pika
@@ -29,20 +30,8 @@ def database():
 
 def initialize():
     with database() as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS operations (
-                id UUID PRIMARY KEY,
-                amount NUMERIC(14,2) NOT NULL CHECK (amount > 0),
-                category TEXT NOT NULL,
-                created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-            )
-        """)
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS outbox (
-                id UUID PRIMARY KEY REFERENCES operations(id),
-                payload TEXT NOT NULL
-            )
-        """)
+        conn.execute((Path(__file__).parent / "sql" / "schema.sql").read_text())
+
 
 
 def events():
@@ -83,16 +72,66 @@ def events():
             time.sleep(2)
 
 
+def serialize(row):
+    return {
+        "id": str(row["id"]), "amount": str(row["amount"]),
+        "category": row["category"], "kind": row["kind"],
+        "created_at": row["created_at"].isoformat(),
+    }
+
+
 class OperationsHandler(BaseHTTPRequestHandler):
     def respond(self, status, payload, source=None):
         body = json.dumps(payload, ensure_ascii=False).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
         if source:
             self.send_header("X-Data-Source", source)
         self.end_headers()
         self.wfile.write(body)
+
+    def identifier(self):
+        try:
+            prefix, identifier = self.path.rsplit("/", 1)
+            if prefix != "/operations":
+                raise ValueError()
+            return str(uuid.UUID(identifier))
+        except ValueError:
+            self.respond(404, {"error": "Операция не найдена"})
+            return None
+
+    def read_payload(self):
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            if not 0 < length <= 16384:
+                raise ValueError()
+            if self.headers.get_content_type() != "application/json":
+                raise ValueError()
+            data = json.loads(self.rfile.read(length))
+            if not isinstance(data, dict):
+                raise ValueError()
+            amount = Decimal(str(data["amount"]))
+            category = data["category"]
+            kind = data.get("kind", "expense")
+            if (
+                not amount.is_finite() or amount <= 0 or amount >= Decimal("1000000000000")
+                or amount != amount.quantize(Decimal("0.01"))
+                or not isinstance(category, str) or not 1 <= len(category.strip()) <= 100
+                or kind not in ("income", "expense")
+            ):
+                raise ValueError()
+            return amount, category.strip(), kind
+        except (ValueError, KeyError, TypeError, InvalidOperation, UnicodeDecodeError):
+            self.respond(400, {"error": "Укажите положительную сумму (до 2 знаков после запятой), категорию (1–100 символов) и тип income/expense"})
+            return None
+
+    def invalidate(self, identifier):
+        try:
+            cache.delete("operation:" + identifier)
+        except redis.RedisError:
+            logging.warning("Cache invalidation failed")
 
     def do_GET(self):
         if self.path == "/health/ready":
@@ -106,86 +145,103 @@ class OperationsHandler(BaseHTTPRequestHandler):
         if self.path == "/":
             self.respond(200, {"message": "Hello, world!"})
             return
-        try:
-            prefix, identifier = self.path.rsplit("/", 1)
-            if prefix != "/operations":
-                raise ValueError()
-            identifier = str(uuid.UUID(identifier))
-        except ValueError:
-            self.respond(404, {"error": "Operation not found"})
+        if self.path == "/operations":
+            try:
+                with database() as conn:
+                    rows = conn.execute("SELECT * FROM operations ORDER BY created_at DESC, id DESC").fetchall()
+                self.respond(200, {"operations": [serialize(row) for row in rows]}, "database")
+            except psycopg.Error:
+                self.respond(503, {"error": "База данных временно недоступна. Повторите запрос."})
+            return
+        identifier = self.identifier()
+        if identifier is None:
             return
         try:
             key = "operation:" + identifier
+            # A per-operation transaction lock serializes cache fill and mutations.
+            # Cached reads still work during a database outage; cache fills require DB.
             try:
                 cached = cache.get(key)
             except redis.RedisError:
                 cached = None
-                logging.warning("Cache unavailable")
             if cached:
-                self.respond(200, json.loads(cached), "cache")
+                result = json.loads(cached)
+                result.setdefault("kind", "expense")
+                self.respond(200, result, "cache")
                 return
             with database() as conn:
-                row = conn.execute(
-                    "SELECT id, amount, category, created_at FROM operations WHERE id = %s",
-                    (identifier,),
-                ).fetchone()
-            if row is None:
-                self.respond(404, {"error": "Operation not found"})
-                return
-            result = {
-                "id": str(row["id"]), "amount": str(row["amount"]),
-                "category": row["category"], "created_at": row["created_at"].isoformat(),
-            }
-            try:
-                cache.setex(key, 300, json.dumps(result))
-            except redis.RedisError:
-                logging.warning("Cache write failed")
+                conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (identifier,))
+                row = conn.execute("SELECT * FROM operations WHERE id = %s", (identifier,)).fetchone()
+                if row is None:
+                    self.respond(404, {"error": "Операция не найдена"})
+                    return
+                result = serialize(row)
+                try:
+                    cache.setex(key, 300, json.dumps(result))
+                except redis.RedisError:
+                    logging.warning("Cache write failed")
             self.respond(200, result, "database")
         except psycopg.Error:
             logging.exception("Database read failed")
-            self.respond(503, {"error": "Database unavailable"})
+            self.respond(503, {"error": "База данных временно недоступна. Повторите запрос."})
 
     def do_POST(self):
         if self.path != "/operations":
             self.respond(404, {"error": "Endpoint not found"})
             return
-        try:
-            length = int(self.headers.get("Content-Length", "0"))
-            if not 0 < length <= 16384:
-                raise ValueError()
-            data = json.loads(self.rfile.read(length))
-            if not isinstance(data, dict):
-                raise ValueError()
-            amount = Decimal(str(data["amount"]))
-            category = data["category"]
-            if (
-                not amount.is_finite() or amount <= 0 or amount >= Decimal("1000000000000")
-                or amount != amount.quantize(Decimal("0.01"))
-                or not isinstance(category, str) or not 1 <= len(category.strip()) <= 100
-            ):
-                raise ValueError()
-        except (ValueError, KeyError, TypeError, InvalidOperation):
-            self.respond(400, {"error": "Provide positive amount with up to 2 decimals and category (1-100 characters)"})
+        payload = self.read_payload()
+        if payload is None:
             return
+        amount, category, kind = payload
         identifier = str(uuid.uuid4())
-        event = {"id": identifier, "amount": str(amount), "category": category.strip()}
         try:
-            # Operation and event are committed together, including during broker outages.
+            # Operation and immutable creation event commit together.
             with database() as conn:
-                conn.execute(
-                    "INSERT INTO operations (id, amount, category) VALUES (%s, %s, %s)",
-                    (identifier, amount, category.strip()),
-                )
+                row = conn.execute(
+                    "INSERT INTO operations (id, amount, category, kind) VALUES (%s, %s, %s, %s) RETURNING *",
+                    (identifier, amount, category, kind),
+                ).fetchone()
+                event = serialize(row)
                 conn.execute("INSERT INTO outbox (id, payload) VALUES (%s, %s)",
                              (identifier, json.dumps(event)))
-            try:
-                cache.delete("operation:" + identifier)
-            except redis.RedisError:
-                logging.warning("Cache invalidation failed")
             self.respond(201, event)
         except psycopg.Error:
             logging.exception("Database write failed")
-            self.respond(503, {"error": "Database unavailable"})
+            self.respond(503, {"error": "База данных временно недоступна. Повторите запрос."})
+
+    def mutate(self, delete=False):
+        identifier = self.identifier()
+        if identifier is None:
+            return
+        payload = None if delete else self.read_payload()
+        if not delete and payload is None:
+            return
+        try:
+            with database() as conn:
+                conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (identifier,))
+                if delete:
+                    row = conn.execute("DELETE FROM operations WHERE id = %s RETURNING *", (identifier,)).fetchone()
+                else:
+                    amount, category, kind = payload
+                    row = conn.execute(
+                        "UPDATE operations SET amount = %s, category = %s, kind = %s WHERE id = %s RETURNING *",
+                        (amount, category, kind, identifier),
+                    ).fetchone()
+                if row is None:
+                    self.respond(404, {"error": "Операция не найдена"})
+                    return
+                # Invalidate before commit while cache fills hold the same lock.
+                self.invalidate(identifier)
+            self.respond(200, {"deleted": identifier} if delete else serialize(row))
+        except psycopg.Error:
+            logging.exception("Database mutation failed")
+            self.respond(503, {"error": "База данных временно недоступна. Повторите запрос."})
+
+    def do_PUT(self):
+        self.mutate()
+
+    def do_DELETE(self):
+        self.mutate(delete=True)
 
 
 if __name__ == "__main__":

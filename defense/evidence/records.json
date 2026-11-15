@@ -1,0 +1,633 @@
+{
+  "ps": {
+    "command": [
+      "docker",
+      "compose",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "exit_code": 0,
+    "output": "{\"Command\":\"\\\"docker-entrypoint.s…\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"654d9a52917b\",\"Image\":\"haproxy:3.2-alpine\",\"Labels\":\"desktop.docker.io/binds/0/Target=/usr/local/etc/haproxy/haproxy.cfg,com.docker.compose.container-number=1,com.docker.compose.image=sha256:1c3568e520453cc8ba98c39501febcf450429c80e6cc27ecad779961d76e597c,com.docker.compose.project=project-finance-app,com.docker.compose.replace=broker-1,com.docker.compose.service=broker,com.docker.compose.oneoff=False,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/ports.scheme=v2,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=1077e61a2eab602f334b055cd63ef6f82c95b149119dd80080455500e5b2c72a,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.depends_on=rabbit1:service_healthy:false,rabbit2:service_healthy:false,rabbit3:service_healthy:false,desktop.docker.io/binds/0/Source=/Users/marat/project-finance-tracker/project-finance-app/ha/haproxy-broker.cfg\",\"LocalVolumes\":\"0\",\"Mounts\":\"/host_mnt/User…\",\"Name\":\"project-finance-app-broker-1\",\"Names\":\"project-finance-app-broker-1\",\"Networks\":\"project-finance-app_messaging\",\"Ports\":\"\",\"Project\":\"project-finance-app\",\"Publishers\":[],\"RunningFor\":\"53 minutes ago\",\"Service\":\"broker\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 53 minutes (healthy)\"}\n{\"Command\":\"\\\"docker-entrypoint.s…\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"a26bdd0ecdff\",\"Image\":\"redis:7-alpine\",\"Labels\":\"desktop.docker.io/ports.scheme=v2,com.docker.compose.config-hash=5e7ff473d492a93f733e5db8fbf0a1e4b2e6f6839596c32a4f734f3946c3087c,com.docker.compose.container-number=1,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.replace=cache-1,com.docker.compose.version=5.1.4,com.docker.compose.depends_on=,com.docker.compose.image=sha256:c5d34a98396a4775e223c74e929162c35c5a2182901ba26b50ade939941ce14b,com.docker.compose.oneoff=False,com.docker.compose.service=cache\",\"LocalVolumes\":\"1\",\"Mounts\":\"38ad9c877d8fd4…\",\"Name\":\"project-finance-app-cache-1\",\"Names\":\"project-finance-app-cache-1\",\"Networks\":\"project-finance-app_data\",\"Ports\":\"6379/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":6379,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"53 minutes ago\",\"Service\":\"cache\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 53 minutes (healthy)\"}\n{\"Command\":\"\\\"docker-entrypoint.s…\\\"\",\"CreatedAt\":\"2026-11-15 18:55:59 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"455dc19fbcc2\",\"Image\":\"haproxy:3.2-alpine\",\"Labels\":\"com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.service=db,com.docker.compose.version=5.1.4,desktop.docker.io/binds/0/Source=/Users/marat/project-finance-tracker/project-finance-app/ha/haproxy-db.cfg,desktop.docker.io/binds/0/Target=/usr/local/etc/haproxy/haproxy.cfg,com.docker.compose.config-hash=43174b69d79077b3d0da661089317ba0bc67addbd8b888cb613ef3460851ab28,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.replace=db-1,com.docker.compose.image=sha256:1c3568e520453cc8ba98c39501febcf450429c80e6cc27ecad779961d76e597c,desktop.docker.io/ports.scheme=v2,com.docker.compose.container-number=1,com.docker.compose.depends_on=pg3:service_healthy:false,pg1:service_healthy:false,pg2:service_healthy:false,com.docker.compose.oneoff=False,desktop.docker.io/binds/0/SourceKind=hostFile\",\"LocalVolumes\":\"0\",\"Mounts\":\"/host_mnt/User…\",\"Name\":\"project-finance-app-db-1\",\"Names\":\"project-finance-app-db-1\",\"Networks\":\"project-finance-app_data\",\"Ports\":\"\",\"Project\":\"project-finance-app\",\"Publishers\":[],\"RunningFor\":\"53 minutes ago\",\"Service\":\"db\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 50 minutes (healthy)\"}\n{\"Command\":\"\\\"sh /backup/run.sh\\\"\",\"CreatedAt\":\"2026-11-15 19:45:32 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"06996a93973f\",\"Image\":\"project-finance-app-db-backup\",\"Labels\":\"com.docker.compose.container-number=1,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/binds/1/Target=/backups,desktop.docker.io/ports.scheme=v2,com.docker.compose.depends_on=db:service_healthy:false,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.service=db-backup,com.docker.compose.version=5.1.4,desktop.docker.io/binds/0/Source=/Users/marat/project-finance-tracker/project-finance-app/ha/backup,desktop.docker.io/binds/1/Source=/Users/marat/project-finance-tracker/project-finance-app/backups,com.docker.compose.config-hash=3d9e0491ee6bff806816a5fdc3d099976d906d5aa3592f927e6dacc3ef0a7925,com.docker.compose.image=sha256:97331d74ae203e6c234417c6764f78fa1d69e2333340ec5d2af43d6a14712d78,com.docker.compose.replace=db-backup-1,desktop.docker.io/binds/0/Target=/backup,desktop.docker.io/binds/1/SourceKind=hostFile,com.docker.compose.project=project-finance-app,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app\",\"LocalVolumes\":\"1\",\"Mounts\":\"/host_mnt/User…,/host_mnt/User…,6f772acffec80a…\",\"Name\":\"project-finance-app-db-backup-1\",\"Names\":\"project-finance-app-db-backup-1\",\"Networks\":\"project-finance-app_data\",\"Ports\":\"5432/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":5432,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"4 minutes ago\",\"Service\":\"db-backup\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 4 minutes (healthy)\"}\n{\"Command\":\"\\\"docker-entrypoint.s…\\\"\",\"CreatedAt\":\"2026-11-15 19:04:38 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"93bb194b8b55\",\"Image\":\"postgres:16-alpine\",\"Labels\":\"com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,desktop.docker.io/binds/1/SourceKind=hostFile,desktop.docker.io/binds/1/Target=/backups,desktop.docker.io/ports.scheme=v2,com.docker.compose.config-hash=d83bd278036dc7cfeda34d29d4033c8ba31c13a4ac0291cde2cbba41365ca346,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.project=project-finance-app,com.docker.compose.service=db-restore,com.docker.compose.version=5.1.4,desktop.docker.io/binds/1/Source=/Users/marat/project-finance-tracker/project-finance-app/backups,com.docker.compose.image=sha256:e013e867e712fec275706a6c51c966f0bb0c93cfa8f51000f85a15f9865a28cb,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml\",\"LocalVolumes\":\"1\",\"Mounts\":\"project-financ…,/host_mnt/User…\",\"Name\":\"project-finance-app-db-restore-1\",\"Names\":\"project-finance-app-db-restore-1\",\"Networks\":\"project-finance-app_data\",\"Ports\":\"5432/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":5432,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"45 minutes ago\",\"Service\":\"db-restore\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 37 minutes (healthy)\"}\n{\"Command\":\"\\\"/usr/local/bin/etcd\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"9928aa213e49\",\"Image\":\"quay.io/coreos/etcd:v3.5.21\",\"Labels\":\"com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=e77bc5bff7a6498c2099e3350a44023d2a2fa89c1c48b2ef66b7ac79e5d66bdc,com.docker.compose.oneoff=False,com.docker.compose.service=etcd1,desktop.docker.io/ports.scheme=v2,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:a3ccd299377af4b9968d8cbaaf9722fe354297f11908f74a846075e1e5f4ee89,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml\",\"LocalVolumes\":\"1\",\"Mounts\":\"project-financ…\",\"Name\":\"project-finance-app-etcd1-1\",\"Names\":\"project-finance-app-etcd1-1\",\"Networks\":\"project-finance-app_control\",\"Ports\":\"2379-2380/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":2379,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":2380,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"53 minutes ago\",\"Service\":\"etcd1\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 53 minutes (healthy)\"}\n{\"Command\":\"\\\"/usr/local/bin/etcd\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"e24730c3cee5\",\"Image\":\"quay.io/coreos/etcd:v3.5.21\",\"Labels\":\"com.docker.compose.oneoff=False,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.service=etcd2,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=b55b21e2a36d3c84c74fc8107cbc002aa42737fb8c2651c0e774380c53bf5a05,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:a3ccd299377af4b9968d8cbaaf9722fe354297f11908f74a846075e1e5f4ee89,desktop.docker.io/ports.scheme=v2\",\"LocalVolumes\":\"1\",\"Mounts\":\"project-financ…\",\"Name\":\"project-finance-app-etcd2-1\",\"Names\":\"project-finance-app-etcd2-1\",\"Networks\":\"project-finance-app_control\",\"Ports\":\"2379-2380/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":2379,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":2380,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"53 minutes ago\",\"Service\":\"etcd2\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 53 minutes (healthy)\"}\n{\"Command\":\"\\\"/usr/local/bin/etcd\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"ccd3add62711\",\"Image\":\"quay.io/coreos/etcd:v3.5.21\",\"Labels\":\"com.docker.compose.config-hash=27bbb9bf7da3b7089621b1af184ac33ca9f481e6202d89f54c70f86def09f990,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:a3ccd299377af4b9968d8cbaaf9722fe354297f11908f74a846075e1e5f4ee89,com.docker.compose.oneoff=False,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.service=etcd3,com.docker.compose.version=5.1.4,desktop.docker.io/ports.scheme=v2\",\"LocalVolumes\":\"1\",\"Mounts\":\"project-financ…\",\"Name\":\"project-finance-app-etcd3-1\",\"Names\":\"project-finance-app-etcd3-1\",\"Networks\":\"project-finance-app_control\",\"Ports\":\"2379-2380/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":2379,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":2380,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"53 minutes ago\",\"Service\":\"etcd3\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 53 minutes (healthy)\"}\n{\"Command\":\"\\\"/docker-entrypoint.…\\\"\",\"CreatedAt\":\"2026-11-15 19:45:33 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"47a2a68b45ec\",\"Image\":\"project-finance-app-frontend\",\"Labels\":\"com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.replace=frontend-1,com.docker.compose.service=frontend,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/8080/tcp=127.0.0.1:8080,com.docker.compose.config-hash=d0c6c50e9b179feeafd93c806e8466930d75f9261dfcb10d3a4d908c9aeb6979,com.docker.compose.depends_on=operations:service_healthy:false,com.docker.compose.image=sha256:a626cd21912286b8430f123b2c32a8287b241e18371e0e58673f2a60e4a0b94f,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.version=5.1.4,maintainer=NGINX Docker Maintainers \\u003cdocker-maint@nginx.com\\u003e,com.docker.compose.container-number=1,com.docker.compose.project=project-finance-app\",\"LocalVolumes\":\"0\",\"Mounts\":\"\",\"Name\":\"project-finance-app-frontend-1\",\"Names\":\"project-finance-app-frontend-1\",\"Networks\":\"project-finance-app_edge\",\"Ports\":\"127.0.0.1:8080-\\u003e8080/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"127.0.0.1\",\"TargetPort\":8080,\"PublishedPort\":8080,\"Protocol\":\"tcp\"}],\"RunningFor\":\"4 minutes ago\",\"Service\":\"frontend\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 3 minutes (healthy)\"}\n{\"Command\":\"\\\"firewall-entrypoint…\\\"\",\"CreatedAt\":\"2026-11-15 19:45:31 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"2fd9ab070ea5\",\"Image\":\"project-finance-app-notifications\",\"Labels\":\"com.docker.compose.image=sha256:ef566d4dd93b477b0f8ff4f76b15515424b2c83172cb15b3b9a32640d1a722af,com.docker.compose.oneoff=False,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.replace=notifications-1,desktop.docker.io/ports.scheme=v2,com.docker.compose.container-number=1,com.docker.compose.depends_on=broker:service_healthy:false,com.docker.compose.service=notifications,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=0fcd2fd7ba1eb2d17f256f8845bc792dd824d96531f9d8e405435192cfedaebd\",\"LocalVolumes\":\"0\",\"Mounts\":\"\",\"Name\":\"project-finance-app-notifications-1\",\"Names\":\"project-finance-app-notifications-1\",\"Networks\":\"project-finance-app_messaging\",\"Ports\":\"\",\"Project\":\"project-finance-app\",\"Publishers\":[],\"RunningFor\":\"4 minutes ago\",\"Service\":\"notifications\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 59 seconds (healthy)\"}\n{\"Command\":\"\\\"firewall-entrypoint…\\\"\",\"CreatedAt\":\"2026-11-15 19:45:32 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"c59fe4b7d279\",\"Image\":\"project-finance-app-operations\",\"Labels\":\"com.docker.compose.config-hash=53a510b9ff208c50fc9c125bb070798820e40331c453d6f0fe70d077f8a7d417,com.docker.compose.container-number=1,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.replace=operations-1,com.docker.compose.depends_on=cache:service_healthy:false,broker:service_healthy:false,db:service_healthy:false,com.docker.compose.image=sha256:983687ac0aa113ebc72995042844eba0bd11cbbb61e394e170de5fcbb251d555,com.docker.compose.oneoff=False,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.service=operations,com.docker.compose.version=5.1.4,desktop.docker.io/ports.scheme=v2\",\"LocalVolumes\":\"0\",\"Mounts\":\"\",\"Name\":\"project-finance-app-operations-1\",\"Names\":\"project-finance-app-operations-1\",\"Networks\":\"project-finance-app_data,project-finance-app_edge,project-finance-app_messaging\",\"Ports\":\"\",\"Project\":\"project-finance-app\",\"Publishers\":[],\"RunningFor\":\"4 minutes ago\",\"Service\":\"operations\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 4 minutes (healthy)\"}\n{\"Command\":\"\\\"/usr/local/bin/star…\\\"\",\"CreatedAt\":\"2026-11-15 19:45:31 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"c44b79294c87\",\"Image\":\"finance-patroni:local\",\"Labels\":\"com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.service=pg1,desktop.docker.io/ports.scheme=v2,com.docker.compose.image=sha256:43950889fce7e1e8413d591a2dd93333b4f5b97730a532e2de9b46c99ebd6e42,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.replace=pg1-1,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=f532ed4f806af3a0e6aaddfe602a5c4cd79ee57797b9a2c2458f8bc9eddf1af3,com.docker.compose.container-number=1,com.docker.compose.depends_on=etcd1:service_healthy:false,etcd2:service_healthy:false,etcd3:service_healthy:false,com.docker.compose.oneoff=False,com.docker.compose.project=project-finance-app\",\"LocalVolumes\":\"2\",\"Mounts\":\"f8f6e6f1741293…,project-financ…\",\"Name\":\"project-finance-app-pg1-1\",\"Names\":\"project-finance-app-pg1-1\",\"Networks\":\"project-finance-app_control,project-finance-app_data\",\"Ports\":\"5432/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":5432,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"4 minutes ago\",\"Service\":\"pg1\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 4 minutes (healthy)\"}\n{\"Command\":\"\\\"/usr/local/bin/star…\\\"\",\"CreatedAt\":\"2026-11-15 19:45:31 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"c382289f7320\",\"Image\":\"finance-patroni:local\",\"Labels\":\"com.docker.compose.oneoff=False,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.replace=pg2-1,com.docker.compose.container-number=1,com.docker.compose.project=project-finance-app,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.service=pg2,com.docker.compose.version=5.1.4,desktop.docker.io/ports.scheme=v2,com.docker.compose.config-hash=93f2edf13adc8326f334478e982c5b2d21019fc6e5e1810587cd77b4cad606df,com.docker.compose.depends_on=etcd3:service_healthy:false,etcd1:service_healthy:false,etcd2:service_healthy:false,com.docker.compose.image=sha256:43950889fce7e1e8413d591a2dd93333b4f5b97730a532e2de9b46c99ebd6e42\",\"LocalVolumes\":\"2\",\"Mounts\":\"37339f7872c127…,project-financ…\",\"Name\":\"project-finance-app-pg2-1\",\"Names\":\"project-finance-app-pg2-1\",\"Networks\":\"project-finance-app_control,project-finance-app_data\",\"Ports\":\"5432/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":5432,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"4 minutes ago\",\"Service\":\"pg2\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 2 minutes (healthy)\"}\n{\"Command\":\"\\\"/usr/local/bin/star…\\\"\",\"CreatedAt\":\"2026-11-15 19:45:31 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"b89d9833bead\",\"Image\":\"finance-patroni:local\",\"Labels\":\"desktop.docker.io/ports.scheme=v2,com.docker.compose.depends_on=etcd1:service_healthy:false,etcd2:service_healthy:false,etcd3:service_healthy:false,com.docker.compose.image=sha256:43950889fce7e1e8413d591a2dd93333b4f5b97730a532e2de9b46c99ebd6e42,com.docker.compose.oneoff=False,com.docker.compose.project=project-finance-app,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.replace=pg3-1,com.docker.compose.service=pg3,com.docker.compose.version=5.1.4,com.docker.compose.config-hash=aa5e934f5d58ae1b4cf3f2e79b7214c65e41d41a8bc9cd74e82fddcaf42dd2a0,com.docker.compose.container-number=1,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml\",\"LocalVolumes\":\"2\",\"Mounts\":\"1ef50fcb4a48c9…,project-financ…\",\"Name\":\"project-finance-app-pg3-1\",\"Names\":\"project-finance-app-pg3-1\",\"Networks\":\"project-finance-app_control,project-finance-app_data\",\"Ports\":\"5432/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":5432,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"4 minutes ago\",\"Service\":\"pg3\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up About a minute (healthy)\"}\n{\"Command\":\"\\\"docker-entrypoint.s…\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"5344d9a54f5d\",\"Image\":\"rabbitmq:4-alpine\",\"Labels\":\"com.docker.compose.config-hash=1cde1be5776a2a127c53d5c1649912140cc4e44aca8d3726d3adc7e6f509cc2a,com.docker.compose.depends_on=,com.docker.compose.image=sha256:8425b8435b0203e87292cf1a4a7e5f8108c610bbd8217f8cc952f43628b24987,com.docker.compose.oneoff=False,desktop.docker.io/binds/0/Source=/Users/marat/project-finance-tracker/project-finance-app/ha/rabbitmq/rabbitmq.conf,desktop.docker.io/binds/0/SourceKind=hostFile,com.docker.compose.container-number=1,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.service=rabbit1,com.docker.compose.version=5.1.4,desktop.docker.io/binds/0/Target=/etc/rabbitmq/rabbitmq.conf,desktop.docker.io/ports.scheme=v2\",\"LocalVolumes\":\"1\",\"Mounts\":\"/host_mnt/User…,project-financ…\",\"Name\":\"project-finance-app-rabbit1-1\",\"Names\":\"project-finance-app-rabbit1-1\",\"Networks\":\"project-finance-app_messaging\",\"Ports\":\"4369/tcp, 5671-5672/tcp, 15691-15692/tcp, 25672/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":4369,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":5671,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":5672,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":15691,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":15692,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":25672,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"53 minutes ago\",\"Service\":\"rabbit1\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 53 minutes (healthy)\"}\n{\"Command\":\"\\\"docker-entrypoint.s…\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"7f26df8809cb\",\"Image\":\"rabbitmq:4-alpine\",\"Labels\":\"com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.service=rabbit2,desktop.docker.io/binds/0/Source=/Users/marat/project-finance-tracker/project-finance-app/ha/rabbitmq/rabbitmq.conf,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/ports.scheme=v2,com.docker.compose.config-hash=a24d2dd74f28b6c62b8cf0b62b9e8dadc39f09139ad2084b96542bf8c61a9ed5,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,com.docker.compose.version=5.1.4,desktop.docker.io/binds/0/Target=/etc/rabbitmq/rabbitmq.conf,com.docker.compose.container-number=1,com.docker.compose.image=sha256:8425b8435b0203e87292cf1a4a7e5f8108c610bbd8217f8cc952f43628b24987,com.docker.compose.project=project-finance-app\",\"LocalVolumes\":\"1\",\"Mounts\":\"project-financ…,/host_mnt/User…\",\"Name\":\"project-finance-app-rabbit2-1\",\"Names\":\"project-finance-app-rabbit2-1\",\"Networks\":\"project-finance-app_messaging\",\"Ports\":\"4369/tcp, 5671-5672/tcp, 15691-15692/tcp, 25672/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":4369,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":5671,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":5672,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":15691,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":15692,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":25672,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"53 minutes ago\",\"Service\":\"rabbit2\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up About a minute (healthy)\"}\n{\"Command\":\"\\\"docker-entrypoint.s…\\\"\",\"CreatedAt\":\"2026-11-15 18:55:58 +0700 +07\",\"ExitCode\":0,\"Health\":\"healthy\",\"ID\":\"770a89eb3e38\",\"Image\":\"rabbitmq:4-alpine\",\"Labels\":\"desktop.docker.io/ports.scheme=v2,com.docker.compose.container-number=1,com.docker.compose.image=sha256:8425b8435b0203e87292cf1a4a7e5f8108c610bbd8217f8cc952f43628b24987,com.docker.compose.project=project-finance-app,com.docker.compose.project.config_files=/Users/marat/project-finance-tracker/project-finance-app/docker-compose.yml,com.docker.compose.project.working_dir=/Users/marat/project-finance-tracker/project-finance-app,desktop.docker.io/binds/0/SourceKind=hostFile,com.docker.compose.config-hash=b59190aae18429db8ad070081eae8236d0f119675d2c94b02fe7fdacd6706293,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.service=rabbit3,com.docker.compose.version=5.1.4,desktop.docker.io/binds/0/Source=/Users/marat/project-finance-tracker/project-finance-app/ha/rabbitmq/rabbitmq.conf,desktop.docker.io/binds/0/Target=/etc/rabbitmq/rabbitmq.conf\",\"LocalVolumes\":\"1\",\"Mounts\":\"/host_mnt/User…,project-financ…\",\"Name\":\"project-finance-app-rabbit3-1\",\"Names\":\"project-finance-app-rabbit3-1\",\"Networks\":\"project-finance-app_messaging\",\"Ports\":\"4369/tcp, 5671-5672/tcp, 15691-15692/tcp, 25672/tcp\",\"Project\":\"project-finance-app\",\"Publishers\":[{\"URL\":\"\",\"TargetPort\":4369,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":5671,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":5672,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":15691,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":15692,\"PublishedPort\":0,\"Protocol\":\"tcp\"},{\"URL\":\"\",\"TargetPort\":25672,\"PublishedPort\":0,\"Protocol\":\"tcp\"}],\"RunningFor\":\"53 minutes ago\",\"Service\":\"rabbit3\",\"Size\":\"0B\",\"State\":\"running\",\"Status\":\"Up 2 minutes (healthy)\"}"
+  },
+  "hello": {
+    "method": "GET",
+    "path": "/api",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:39 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "28",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"message\": \"Hello, world!\"}"
+  },
+  "ready": {
+    "method": "GET",
+    "path": "/health/ready",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:39 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "15",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"ready\": true}"
+  },
+  "pg-health": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "pg1",
+      "patronictl",
+      "-c",
+      "/etc/patroni.yml",
+      "list"
+    ],
+    "exit_code": 0,
+    "output": "+ Cluster: finance-ha (7708365778203029524) -------+----+-------------+-----+------------+-----+\n| Member | Host         | Role         | State     | TL | Receive LSN | Lag | Replay LSN | Lag |\n+--------+--------------+--------------+-----------+----+-------------+-----+------------+-----+\n| pg1    | 172.29.20.12 | Leader       | running   | 11 |             |     |            |     |\n| pg2    | 172.29.20.13 | Sync Standby | streaming | 11 |   0/404DBD8 |   0 |  0/404DBD8 |   0 |\n| pg3    | 172.29.20.16 | Replica      | streaming | 11 |   0/404DBD8 |   0 |  0/404DBD8 |   0 |\n+--------+--------------+--------------+-----------+----+-------------+-----+------------+-----+"
+  },
+  "replication": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "db-backup",
+      "psql",
+      "-h",
+      "db",
+      "-U",
+      "finance",
+      "-d",
+      "finance",
+      "-c",
+      "SELECT application_name, state, sync_state FROM pg_stat_replication"
+    ],
+    "exit_code": 0,
+    "output": "application_name |   state   | sync_state \n------------------+-----------+------------\n pg2              | streaming | sync\n pg3              | streaming | async\n(2 rows)"
+  },
+  "etcd-health": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "etcd1",
+      "etcdctl",
+      "endpoint",
+      "health",
+      "--cluster"
+    ],
+    "exit_code": 0,
+    "output": "http://etcd1:2379 is healthy: successfully committed proposal: took = 1.043833ms\nhttp://etcd2:2379 is healthy: successfully committed proposal: took = 2.042958ms\nhttp://etcd3:2379 is healthy: successfully committed proposal: took = 2.10125ms"
+  },
+  "redis-health": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "cache",
+      "redis-cli",
+      "ping"
+    ],
+    "exit_code": 0,
+    "output": "PONG"
+  },
+  "rabbit-health": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "rabbit1",
+      "rabbitmqctl",
+      "list_queues",
+      "name",
+      "type",
+      "leader",
+      "members",
+      "online",
+      "messages_ready"
+    ],
+    "exit_code": 0,
+    "output": "Timeout: 60.0 seconds ...\nListing queues for vhost / ...\nname\ttype\tleader\tmembers\tonline\tmessages_ready\noperation.created\tquorum\trabbit@rabbit1\t[rabbit@rabbit1, rabbit@rabbit2, rabbit@rabbit3]\t[rabbit@rabbit1, rabbit@rabbit2, rabbit@rabbit3]\t0"
+  },
+  "schema": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "operations",
+      "cat",
+      "sql/schema.sql"
+    ],
+    "exit_code": 0,
+    "output": "-- Idempotent schema and migration from the original expense-only version.\nCREATE TABLE IF NOT EXISTS operations (\n    id UUID PRIMARY KEY,\n    amount NUMERIC(14,2) NOT NULL CHECK (amount > 0),\n    category TEXT NOT NULL,\n    kind TEXT NOT NULL DEFAULT 'expense' CHECK (kind IN ('income', 'expense')),\n    created_at TIMESTAMPTZ NOT NULL DEFAULT now()\n);\nALTER TABLE operations ADD COLUMN IF NOT EXISTS kind TEXT NOT NULL DEFAULT 'expense'\n    CHECK (kind IN ('income', 'expense'));\nCREATE TABLE IF NOT EXISTS outbox (\n    id UUID PRIMARY KEY,\n    payload TEXT NOT NULL\n);\n-- Events are independent creation snapshots. Deleting an operation must not\n-- delete a pending event or fail while the broker is temporarily unavailable.\nALTER TABLE outbox DROP CONSTRAINT IF EXISTS outbox_id_fkey;"
+  },
+  "create": {
+    "method": "POST",
+    "path": "/operations",
+    "status": 201,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:40 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "181",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"id\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\", \"amount\": \"450.50\", \"category\": \"Защита: продукты\", \"kind\": \"expense\", \"created_at\": \"2026-11-15T12:49:40.570322+00:00\"}"
+  },
+  "demo_id": "4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+  "sql-create": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "db-backup",
+      "psql",
+      "-h",
+      "db",
+      "-U",
+      "finance",
+      "-d",
+      "finance",
+      "-x",
+      "-c",
+      "SELECT id,amount,category,kind FROM operations WHERE id='4d0535fd-3e53-4563-a4e7-55dbdee46ec2'"
+    ],
+    "exit_code": 0,
+    "output": "-[ RECORD 1 ]----------------------------------\nid       | 4d0535fd-3e53-4563-a4e7-55dbdee46ec2\namount   | 450.50\ncategory | Защита: продукты\nkind     | expense"
+  },
+  "cache-clear": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "cache",
+      "redis-cli",
+      "DEL",
+      "operation:4d0535fd-3e53-4563-a4e7-55dbdee46ec2"
+    ],
+    "exit_code": 0,
+    "output": "0"
+  },
+  "read-database": {
+    "method": "GET",
+    "path": "/operations/4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:40 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "181",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Data-Source": "database",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"id\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\", \"amount\": \"450.50\", \"category\": \"Защита: продукты\", \"kind\": \"expense\", \"created_at\": \"2026-11-15T12:49:40.570322+00:00\"}"
+  },
+  "read-cache": {
+    "method": "GET",
+    "path": "/operations/4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:40 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "181",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Data-Source": "cache",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"id\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\", \"amount\": \"450.50\", \"category\": \"Защита: продукты\", \"kind\": \"expense\", \"created_at\": \"2026-11-15T12:49:40.570322+00:00\"}"
+  },
+  "cache-key": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "cache",
+      "redis-cli",
+      "GET",
+      "operation:4d0535fd-3e53-4563-a4e7-55dbdee46ec2"
+    ],
+    "exit_code": 0,
+    "output": "{\"id\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\", \"amount\": \"450.50\", \"category\": \"\\u0417\\u0430\\u0449\\u0438\\u0442\\u0430: \\u043f\\u0440\\u043e\\u0434\\u0443\\u043a\\u0442\\u044b\", \"kind\": \"expense\", \"created_at\": \"2026-11-15T12:49:40.570322+00:00\"}"
+  },
+  "cache-ttl": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "cache",
+      "redis-cli",
+      "TTL",
+      "operation:4d0535fd-3e53-4563-a4e7-55dbdee46ec2"
+    ],
+    "exit_code": 0,
+    "output": "300"
+  },
+  "events": {
+    "publisher_lines": [
+      "operations-1  | 2026-11-15 12:49:40,716 Published operation.created 4d0535fd-3e53-4563-a4e7-55dbdee46ec2"
+    ],
+    "consumer_lines": [
+      "notifications-1  | 2026-11-15 12:49:40,715 Consumed operation.created {\"id\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\", \"amount\": \"450.50\", \"category\": \"\\u0417\\u0430\\u0449\\u0438\\u0442\\u0430: \\u043f\\u0440\\u043e\\u0434\\u0443\\u043a\\u0442\\u044b\", \"kind\": \"expense\", \"created_at\": \"2026-11-15T12:49:40.570322+00:00\"}"
+    ]
+  },
+  "outbox": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "db-backup",
+      "psql",
+      "-h",
+      "db",
+      "-U",
+      "finance",
+      "-d",
+      "finance",
+      "-x",
+      "-c",
+      "SELECT count(*) AS pending_events FROM outbox WHERE id='4d0535fd-3e53-4563-a4e7-55dbdee46ec2'"
+    ],
+    "exit_code": 0,
+    "output": "-[ RECORD 1 ]--+--\npending_events | 0"
+  },
+  "update": {
+    "method": "PUT",
+    "path": "/operations/4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:41 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "182",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"id\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\", \"amount\": \"600.00\", \"category\": \"Защита: обновлено\", \"kind\": \"income\", \"created_at\": \"2026-11-15T12:49:40.570322+00:00\"}"
+  },
+  "cache-after-update": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "cache",
+      "redis-cli",
+      "GET",
+      "operation:4d0535fd-3e53-4563-a4e7-55dbdee46ec2"
+    ],
+    "exit_code": 0,
+    "output": ""
+  },
+  "read-after-update": {
+    "method": "GET",
+    "path": "/operations/4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:41 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "182",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Data-Source": "database",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"id\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\", \"amount\": \"600.00\", \"category\": \"Защита: обновлено\", \"kind\": \"income\", \"created_at\": \"2026-11-15T12:49:40.570322+00:00\"}"
+  },
+  "sql-update": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "db-backup",
+      "psql",
+      "-h",
+      "db",
+      "-U",
+      "finance",
+      "-d",
+      "finance",
+      "-x",
+      "-c",
+      "SELECT id,amount,category,kind FROM operations WHERE id='4d0535fd-3e53-4563-a4e7-55dbdee46ec2'"
+    ],
+    "exit_code": 0,
+    "output": "-[ RECORD 1 ]----------------------------------\nid       | 4d0535fd-3e53-4563-a4e7-55dbdee46ec2\namount   | 600.00\ncategory | Защита: обновлено\nkind     | income"
+  },
+  "delete": {
+    "method": "DELETE",
+    "path": "/operations/4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:41 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "51",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"deleted\": \"4d0535fd-3e53-4563-a4e7-55dbdee46ec2\"}"
+  },
+  "read-after-delete": {
+    "method": "GET",
+    "path": "/operations/4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+    "status": 404,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:41 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "49",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"error\": \"Операция не найдена\"}"
+  },
+  "sql-delete": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "db-backup",
+      "psql",
+      "-h",
+      "db",
+      "-U",
+      "finance",
+      "-d",
+      "finance",
+      "-x",
+      "-c",
+      "SELECT count(*) AS matching_operations FROM operations WHERE id='4d0535fd-3e53-4563-a4e7-55dbdee46ec2'"
+    ],
+    "exit_code": 0,
+    "output": "-[ RECORD 1 ]-------+--\nmatching_operations | 0"
+  },
+  "bad-amount": {
+    "method": "POST",
+    "path": "/operations",
+    "status": 400,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:41 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "185",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"error\": \"Укажите положительную сумму (до 2 знаков после запятой), категорию (1–100 символов) и тип income/expense\"}"
+  },
+  "cid-frontend": {
+    "command": [
+      "docker",
+      "compose",
+      "ps",
+      "-q",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "output": "47a2a68b45ec72c280ded53c7f310115133d144d6c9ef7b7ea35a1da01124229"
+  },
+  "networks-frontend": {
+    "command": [
+      "docker",
+      "inspect",
+      "--format",
+      "{{json .NetworkSettings.Networks}}",
+      "47a2a68b45ec72c280ded53c7f310115133d144d6c9ef7b7ea35a1da01124229"
+    ],
+    "exit_code": 0,
+    "output": "{\"project-finance-app_edge\":{\"IPAMConfig\":{\"IPv4Address\":\"172.29.10.11\"},\"Links\":null,\"Aliases\":[\"project-finance-app-frontend-1\",\"frontend\"],\"DriverOpts\":null,\"GwPriority\":0,\"NetworkID\":\"66bb4dcf94279051aa33a78d44ddc9c1bc0a6801210529072514633758b8a9d9\",\"EndpointID\":\"354b0fac7727e79dea1eede6617290ddf013366977f3822bf4125d4e4bf0a747\",\"Gateway\":\"172.29.10.1\",\"IPAddress\":\"172.29.10.11\",\"MacAddress\":\"3a:87:df:9f:0c:1a\",\"IPPrefixLen\":24,\"IPv6Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"DNSNames\":[\"project-finance-app-frontend-1\",\"frontend\",\"47a2a68b45ec\"]}}"
+  },
+  "cid-operations": {
+    "command": [
+      "docker",
+      "compose",
+      "ps",
+      "-q",
+      "operations"
+    ],
+    "exit_code": 0,
+    "output": "c59fe4b7d279817786c054372c6c2ac273e436ec6fb4918d0389b1b24350944e"
+  },
+  "networks-operations": {
+    "command": [
+      "docker",
+      "inspect",
+      "--format",
+      "{{json .NetworkSettings.Networks}}",
+      "c59fe4b7d279817786c054372c6c2ac273e436ec6fb4918d0389b1b24350944e"
+    ],
+    "exit_code": 0,
+    "output": "{\"project-finance-app_data\":{\"IPAMConfig\":{\"IPv4Address\":\"172.29.20.20\"},\"Links\":null,\"Aliases\":[\"project-finance-app-operations-1\",\"operations\"],\"DriverOpts\":null,\"GwPriority\":0,\"NetworkID\":\"d6573660764c91df2c0dc022029c2b9804f14bc1e389e6f96f31a696d4346da2\",\"EndpointID\":\"335b2ef2a8fc24dbce84704df2992189f458a9023c373ae8a3c8713087b1e4ac\",\"Gateway\":\"\",\"IPAddress\":\"172.29.20.20\",\"MacAddress\":\"ae:f3:94:7b:ea:f6\",\"IPPrefixLen\":24,\"IPv6Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"DNSNames\":[\"project-finance-app-operations-1\",\"operations\",\"c59fe4b7d279\"]},\"project-finance-app_edge\":{\"IPAMConfig\":{\"IPv4Address\":\"172.29.10.10\"},\"Links\":null,\"Aliases\":[\"project-finance-app-operations-1\",\"operations\"],\"DriverOpts\":null,\"GwPriority\":1,\"NetworkID\":\"66bb4dcf94279051aa33a78d44ddc9c1bc0a6801210529072514633758b8a9d9\",\"EndpointID\":\"b8f5d6bbf74dee6a4cd0df35ceaf22d904de95a38954fad66ada4eb0e439a803\",\"Gateway\":\"172.29.10.1\",\"IPAddress\":\"172.29.10.10\",\"MacAddress\":\"b6:62:f6:6f:50:08\",\"IPPrefixLen\":24,\"IPv6Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"DNSNames\":[\"project-finance-app-operations-1\",\"operations\",\"c59fe4b7d279\"]},\"project-finance-app_messaging\":{\"IPAMConfig\":{\"IPv4Address\":\"172.29.30.20\"},\"Links\":null,\"Aliases\":[\"project-finance-app-operations-1\",\"operations\"],\"DriverOpts\":null,\"GwPriority\":0,\"NetworkID\":\"8c713c6f08df4790136d08a389d43c26529c3d51f4ae30fd4fcd9bfe334b2069\",\"EndpointID\":\"fe082be6f1ac9df857dcba4ca5caee3ad42a0ed537bea39355f86dfe76cd8e22\",\"Gateway\":\"172.29.30.1\",\"IPAddress\":\"172.29.30.20\",\"MacAddress\":\"a6:e6:2c:75:7d:0c\",\"IPPrefixLen\":24,\"IPv6Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"DNSNames\":[\"project-finance-app-operations-1\",\"operations\",\"c59fe4b7d279\"]}}"
+  },
+  "cid-notifications": {
+    "command": [
+      "docker",
+      "compose",
+      "ps",
+      "-q",
+      "notifications"
+    ],
+    "exit_code": 0,
+    "output": "2fd9ab070ea569c231b1559f83e7c7cb18db1082f600a3528ba5df4ad279bf4f"
+  },
+  "networks-notifications": {
+    "command": [
+      "docker",
+      "inspect",
+      "--format",
+      "{{json .NetworkSettings.Networks}}",
+      "2fd9ab070ea569c231b1559f83e7c7cb18db1082f600a3528ba5df4ad279bf4f"
+    ],
+    "exit_code": 0,
+    "output": "{\"project-finance-app_messaging\":{\"IPAMConfig\":{\"IPv4Address\":\"172.29.30.30\"},\"Links\":null,\"Aliases\":[\"project-finance-app-notifications-1\",\"notifications\"],\"DriverOpts\":null,\"GwPriority\":0,\"NetworkID\":\"8c713c6f08df4790136d08a389d43c26529c3d51f4ae30fd4fcd9bfe334b2069\",\"EndpointID\":\"5fc55bacf63aaafe2fe95ee999134bab539158a5a577d806edc54d4d0d5b021c\",\"Gateway\":\"172.29.30.1\",\"IPAddress\":\"172.29.30.30\",\"MacAddress\":\"a2:36:e5:0c:82:c6\",\"IPPrefixLen\":24,\"IPv6Gateway\":\"\",\"GlobalIPv6Address\":\"\",\"GlobalIPv6PrefixLen\":0,\"DNSNames\":[\"project-finance-app-notifications-1\",\"notifications\",\"2fd9ab070ea5\"]}}"
+  },
+  "operations-iptables": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "--user",
+      "root",
+      "operations",
+      "iptables-save"
+    ],
+    "exit_code": 0,
+    "output": "# Generated by iptables-save v1.8.13 (nf_tables) on Sun Nov 15 12:49:41 2026\n*filter\n:INPUT DROP [0:0]\n:FORWARD DROP [0:0]\n:OUTPUT DROP [0:0]\n-A INPUT -i lo -j ACCEPT\n-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A INPUT -p tcp -m tcp --dport 8080 -m comment --comment allow-http -j ACCEPT\n-A INPUT -m comment --comment deny-other-input -j REJECT --reject-with icmp-admin-prohibited\n-A OUTPUT -o lo -j ACCEPT\n-A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A OUTPUT -d 172.29.20.10/32 -p tcp -m tcp --dport 5432 -m comment --comment allow-db -j ACCEPT\n-A OUTPUT -d 172.29.20.11/32 -p tcp -m tcp --dport 6379 -m comment --comment allow-cache -j ACCEPT\n-A OUTPUT -d 172.29.30.10/32 -p tcp -m tcp --dport 5672 -m comment --comment allow-broker -j ACCEPT\n-A OUTPUT -m comment --comment deny-other-output -j REJECT --reject-with icmp-admin-prohibited\nCOMMIT\n# Completed on Sun Nov 15 12:49:41 2026\n# Generated by iptables-save v1.8.13 (nf_tables) on Sun Nov 15 12:49:41 2026\n*nat\n:PREROUTING ACCEPT [0:0]\n:INPUT ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\n:POSTROUTING ACCEPT [0:0]\n:DOCKER_OUTPUT - [0:0]\n:DOCKER_POSTROUTING - [0:0]\n-A OUTPUT -d 127.0.0.11/32 -j DOCKER_OUTPUT\n-A POSTROUTING -d 127.0.0.11/32 -j DOCKER_POSTROUTING\n-A DOCKER_OUTPUT -d 127.0.0.11/32 -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.11:33831\n-A DOCKER_OUTPUT -d 127.0.0.11/32 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.11:40550\n-A DOCKER_POSTROUTING -s 127.0.0.11/32 -p tcp -m tcp --sport 33831 -j SNAT --to-source :53\n-A DOCKER_POSTROUTING -s 127.0.0.11/32 -p udp -m udp --sport 40550 -j SNAT --to-source :53\nCOMMIT\n# Completed on Sun Nov 15 12:49:41 2026"
+  },
+  "operations-ip6tables": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "--user",
+      "root",
+      "operations",
+      "ip6tables-save"
+    ],
+    "exit_code": 0,
+    "output": "# Generated by ip6tables-save v1.8.13 (nf_tables) on Sun Nov 15 12:49:41 2026\n*filter\n:INPUT DROP [0:0]\n:FORWARD DROP [0:0]\n:OUTPUT DROP [0:0]\n-A INPUT -i lo -j ACCEPT\n-A OUTPUT -o lo -j ACCEPT\nCOMMIT\n# Completed on Sun Nov 15 12:49:41 2026"
+  },
+  "operations-privileges": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "--user",
+      "nobody",
+      "operations",
+      "python",
+      "-c",
+      "print(''.join(x for x in open('/proc/1/status') if x.startswith(('Uid:','CapEff:'))))"
+    ],
+    "exit_code": 0,
+    "output": "Uid:\t65534\t65534\t65534\t65534\nCapEff:\t0000000000000000"
+  },
+  "notifications-iptables": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "--user",
+      "root",
+      "notifications",
+      "iptables-save"
+    ],
+    "exit_code": 0,
+    "output": "# Generated by iptables-save v1.8.13 (nf_tables) on Sun Nov 15 12:49:42 2026\n*filter\n:INPUT DROP [0:0]\n:FORWARD DROP [0:0]\n:OUTPUT DROP [0:0]\n-A INPUT -i lo -j ACCEPT\n-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A INPUT -m comment --comment deny-other-input -j REJECT --reject-with icmp-admin-prohibited\n-A OUTPUT -o lo -j ACCEPT\n-A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A OUTPUT -d 172.29.20.10/32 -p tcp -m tcp --dport 5432 -m comment --comment deny-db -j REJECT --reject-with icmp-admin-prohibited\n-A OUTPUT -d 172.29.20.11/32 -p tcp -m tcp --dport 6379 -m comment --comment deny-cache -j REJECT --reject-with icmp-admin-prohibited\n-A OUTPUT -d 172.29.30.10/32 -p tcp -m tcp --dport 5672 -m comment --comment allow-broker -j ACCEPT\n-A OUTPUT -m comment --comment deny-other-output -j REJECT --reject-with icmp-admin-prohibited\nCOMMIT\n# Completed on Sun Nov 15 12:49:42 2026\n# Generated by iptables-save v1.8.13 (nf_tables) on Sun Nov 15 12:49:42 2026\n*nat\n:PREROUTING ACCEPT [0:0]\n:INPUT ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\n:POSTROUTING ACCEPT [0:0]\n:DOCKER_OUTPUT - [0:0]\n:DOCKER_POSTROUTING - [0:0]\n-A OUTPUT -d 127.0.0.11/32 -j DOCKER_OUTPUT\n-A POSTROUTING -d 127.0.0.11/32 -j DOCKER_POSTROUTING\n-A DOCKER_OUTPUT -d 127.0.0.11/32 -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.11:34075\n-A DOCKER_OUTPUT -d 127.0.0.11/32 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.11:57682\n-A DOCKER_POSTROUTING -s 127.0.0.11/32 -p tcp -m tcp --sport 34075 -j SNAT --to-source :53\n-A DOCKER_POSTROUTING -s 127.0.0.11/32 -p udp -m udp --sport 57682 -j SNAT --to-source :53\nCOMMIT\n# Completed on Sun Nov 15 12:49:42 2026"
+  },
+  "notifications-ip6tables": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "--user",
+      "root",
+      "notifications",
+      "ip6tables-save"
+    ],
+    "exit_code": 0,
+    "output": "# Generated by ip6tables-save v1.8.13 (nf_tables) on Sun Nov 15 12:49:42 2026\n*filter\n:INPUT DROP [0:0]\n:FORWARD DROP [0:0]\n:OUTPUT DROP [0:0]\n-A INPUT -i lo -j ACCEPT\n-A OUTPUT -o lo -j ACCEPT\nCOMMIT\n# Completed on Sun Nov 15 12:49:42 2026"
+  },
+  "notifications-privileges": {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "--user",
+      "nobody",
+      "notifications",
+      "python",
+      "-c",
+      "print(''.join(x for x in open('/proc/1/status') if x.startswith(('Uid:','CapEff:'))))"
+    ],
+    "exit_code": 0,
+    "output": "Uid:\t65534\t65534\t65534\t65534\nCapEff:\t0000000000000000"
+  },
+  "hw4": {
+    "command": [
+      "python3",
+      "scripts/verify_hw4.py"
+    ],
+    "exit_code": 0,
+    "output": "SEGMENTATION notifications is connected only to messaging\nALLOW operations -> 172.29.20.10:5432\nDENY  notifications -> 172.29.20.10:5432\nALLOW operations -> 172.29.20.11:6379\nDENY  notifications -> 172.29.20.11:6379\nALLOW operations -> broker:5672\nALLOW notifications -> broker:5672\nDENY  notifications -> 172.29.30.20:8080\nDENY  operations -> 172.29.20.10:5433\nCOUNTER deny-db: 0 -> 1\nCOUNTER deny-cache: 0 -> 1\nHTTP GET -> database\nHTTP GET -> cache\nEVENT operation.created 039fecc4-60d8-461c-bf9b-673713f138d1 consumed by notifications\nДЗ 4: all checks passed"
+  },
+  "frontend-tests": {
+    "command": [
+      "python3",
+      "scripts/verify_frontend.py"
+    ],
+    "exit_code": 0,
+    "output": "PASS: frontend, assets, readiness, CRUD, validation, cache update/delete, original data preserved"
+  },
+  "fw-outage": {
+    "command": [
+      "python3",
+      "scripts/verify_firewall_outage.py"
+    ],
+    "exit_code": 0,
+    "output": "BEFORE  GET /operations: HTTP 200\nBLOCKED operations -> 172.29.20.10:5432: HTTP 503\n       2      120 REJECT     tcp  --  *      *       0.0.0.0/0            172.29.20.10         tcp dpt:5432 /* defense-db-block */ reject-with tcp-reset\nCLEANUP temporary rule removed\nAFTER   GET /operations: HTTP 200\nPASS: legitimate connection blocked, error observed, service recovered"
+  },
+  "final-health": {
+    "command": [
+      "docker",
+      "compose",
+      "ps",
+      "--format",
+      "{{.Service}}: {{.Health}}"
+    ],
+    "exit_code": 0,
+    "output": "broker: healthy\ncache: healthy\ndb: healthy\ndb-backup: healthy\ndb-restore: healthy\netcd1: healthy\netcd2: healthy\netcd3: healthy\nfrontend: healthy\nnotifications: healthy\noperations: healthy\npg1: healthy\npg2: healthy\npg3: healthy\nrabbit1: healthy\nrabbit2: healthy\nrabbit3: healthy"
+  },
+  "cleanup-demo": {
+    "method": "DELETE",
+    "path": "/operations/4d0535fd-3e53-4563-a4e7-55dbdee46ec2",
+    "status": 404,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sun, 15 Nov 2026 12:49:45 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "49",
+      "Connection": "close",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "same-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+    },
+    "body": "{\"error\": \"Операция не найдена\"}"
+  },
+  "captured_at": "2026-11-15T19:49:45.133575+07:00"
+}

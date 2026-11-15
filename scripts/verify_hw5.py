@@ -87,7 +87,12 @@ def queue(caller="rabbit1"):
     output = compose("exec", "-T", caller, "rabbitmqctl", "list_queues",
                      "name", "type", "leader", "members", "online", "messages_ready", "--formatter", "json")
     rows = json.loads(output[output.index("["):])
-    return next(row for row in rows if row["name"] == "operation.created")
+    result = next((row for row in rows if row["name"] == "operation.created"), None)
+    if result is None:
+        # Queue metadata can temporarily disappear during a quorum election.
+        # Let wait_for retry instead of aborting the test with StopIteration.
+        raise ValueError("operation.created metadata not available yet")
+    return result
 
 
 def event_published(identifier):

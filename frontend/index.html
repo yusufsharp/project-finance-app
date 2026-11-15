@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172c29">
+  <title>Копилка — личные финансы</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23172c29'/%3E%3Cpath d='M19 18v28m0-14 23-14M19 32l23 14' fill='none' stroke='%23c8f087' stroke-width='6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l5-1L21 7a2.8 2.8 0 0 0-4-4L5 15z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2 6M20 4v7h-7"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 7V4H5a3 3 0 0 0 0 6h16v10H5a3 3 0 0 1-3-3V7M21 13h-5v4h5"/></symbol>
+</svg>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="#overview" aria-label="Копилка — обзор"><span class="brand-mark">к</span>копилка<span class="brand-dot">.</span></a>
+    <p class="nav-label">ЛИЧНЫЕ ФИНАНСЫ</p>
+    <nav aria-label="Главная навигация">
+      <a href="#overview" class="nav-item active" data-view="overview"><svg><use href="#i-grid"/></svg>Обзор</a>
+      <a href="#operations" class="nav-item" data-view="operations"><svg><use href="#i-list"/></svg>Операции<span id="nav-count">—</span></a>
+    </nav>
+    <div class="sidebar-note"><span class="note-star">✳</span><h2>Большие планы.<br>Маленькие шаги.</h2><p>Начните с простого — узнайте, куда уходят ваши деньги.</p></div>
+    <div class="workspace"><span class="avatar">Л</span><div>Личное пространство<small>Учёт доходов и расходов</small></div></div>
+  </aside>
+  <main>
+    <header class="topbar"><span class="breadcrumb">Моё пространство <span>/</span> <b id="breadcrumb-view">Обзор</b></span><span class="sync" id="sync-status" role="status"><span></span>Загрузка данных</span></header>
+    <div class="page-content">
+      <div class="page-heading"><div><p class="eyebrow" id="today"></p><h1 id="page-title">Деньги под контролем<span>.</span></h1><p id="page-subtitle">Всё, что нужно знать о ваших финансах, — здесь.</p></div><button class="button primary" id="add-operation"><svg><use href="#i-plus"/></svg>Добавить операцию</button></div>
+      <div class="error-banner" id="load-error" role="alert" hidden><span>Не удалось загрузить операции. Проверьте соединение и повторите попытку.</span><button class="button secondary" id="retry">Повторить</button></div>
+      <div class="overview" id="overview">
+        <div class="section-heading"><h2>Ваши финансы</h2><label class="period-label">Период <select id="period"><option value="all">За всё время</option><option value="month">Этот месяц</option><option value="30days">Последние 30 дней</option></select></label></div>
+        <section class="stats" aria-label="Сводка финансов" aria-busy="true" id="stats">
+          <article class="stat balance"><div class="stat-label">Общий баланс<svg><use href="#i-wallet"/></svg></div><strong id="balance">—</strong><div class="stat-foot">Доходы минус расходы <span>₽</span></div></article>
+          <article class="stat"><div class="stat-label">Доходы<span class="trend income"><svg><use href="#i-arrow"/></svg></span></div><strong id="income">—</strong><div class="stat-foot" id="income-count">Загружаем операции…</div></article>
+          <article class="stat"><div class="stat-label">Расходы<span class="trend expense"><svg><use href="#i-arrow"/></svg></span></div><strong id="expense">—</strong><div class="stat-foot" id="expense-count">Загружаем операции…</div></article>
+        </section>
+      </div>
+      <div class="content-grid">
+        <section class="panel operations-panel" aria-labelledby="operations-title">
+          <div class="panel-heading"><div><h2 id="operations-title">История операций</h2><p id="results-count">Загружаем ваши операции…</p></div><button class="icon-button" id="refresh" aria-label="Обновить операции" title="Обновить"><svg><use href="#i-refresh"/></svg></button></div>
+          <div class="filters"><label class="search"><svg><use href="#i-search"/></svg><input id="search" type="search" placeholder="Найти категорию…" aria-label="Поиск по категории" maxlength="100"></label><label><span class="sr-only">Тип операции</span><select id="kind-filter"><option value="all">Все операции</option><option value="expense">Расходы</option><option value="income">Доходы</option></select></label></div>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Операция</th><th scope="col">Дата</th><th scope="col" class="amount-cell">Сумма</th><th scope="col"><span class="sr-only">Действия</span></th></tr></thead><tbody id="operation-rows"></tbody></table></div>
+          <div class="empty-state" id="empty-state" hidden><span class="empty-icon"><svg><use href="#i-wallet"/></svg></span><h3 id="empty-title">Начнём с первой операции</h3><p id="empty-text">Добавьте доход или расход — здесь появится ваша история.</p><button class="button secondary" id="empty-add">Добавить операцию</button></div>
+          <div id="loading" class="loading" role="status">Загружаем операции…</div>
+          <div class="pagination" id="pagination" hidden><span id="page-description"></span><div><button id="previous" class="page-button" aria-label="Предыдущая страница">←</button><button id="next" class="page-button" aria-label="Следующая страница">→</button></div></div>
+        </section>
+        <aside class="insights" id="insights">
+          <section class="panel categories-panel"><p class="eyebrow">СТРУКТУРА РАСХОДОВ</p><h2>Куда уходят деньги</h2><p class="panel-caption">По категориям за выбранный период</p><div id="category-bars" class="category-bars"></div><div class="category-total"><span>Всего расходов</span><strong id="category-total">—</strong></div></section>
+          <div class="tip-card"><span class="tip-icon">↗</span><div><h3>Сначала — ясность</h3><p>Записывайте даже небольшие покупки. Так проще замечать привычки и планировать следующий месяц.</p></div></div>
+        </aside>
+      </div>
+      <footer>Меньше неопределённости. Больше свободы.<span>копилка © <span id="year"></span></span></footer>
+    </div>
+  </main>
+</div>
+<dialog id="operation-dialog" aria-labelledby="dialog-title">
+  <form id="operation-form">
+    <div class="dialog-heading"><div><p class="eyebrow">ВАШИ ФИНАНСЫ</p><h2 id="dialog-title">Новая операция</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Закрыть"><svg><use href="#i-close"/></svg></button></div>
+    <fieldset class="kind-picker"><legend class="sr-only">Тип операции</legend><label><input type="radio" name="kind" value="expense" checked><span>↙ Расход</span></label><label><input type="radio" name="kind" value="income"><span>↗ Доход</span></label></fieldset>
+    <label class="field">Сумма, ₽<input name="amount" id="amount-input" type="number" inputmode="decimal" min="0.01" max="999999999999.99" step="0.01" placeholder="0,00" required autofocus></label>
+    <label class="field">Категория<input name="category" id="category-input" list="category-suggestions" placeholder="Например, продукты" maxlength="100" required><datalist id="category-suggestions"><option value="Продукты"><option value="Транспорт"><option value="Кафе и рестораны"><option value="Дом"><option value="Здоровье"><option value="Развлечения"><option value="Зарплата"><option value="Другое"></datalist></label>
+    <p class="form-hint">Дата операции сохранится автоматически.</p><p class="form-error" id="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><button type="button" class="button secondary" id="cancel-dialog">Отмена</button><button type="submit" class="button primary" id="save-operation">Добавить операцию</button></div>
+  </form>
+</dialog>
+<dialog id="delete-dialog" aria-labelledby="delete-title"><div class="delete-body"><span class="delete-symbol"><svg><use href="#i-trash"/></svg></span><h2 id="delete-title">Удалить операцию?</h2><p id="delete-description"></p><p class="form-error" id="delete-error" role="alert" hidden></p><div class="dialog-actions"><button class="button secondary" id="cancel-delete" autofocus>Оставить</button><button class="button danger" id="confirm-delete">Удалить</button></div></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+<noscript><p class="noscript">Для работы Копилки включите JavaScript в браузере.</p></noscript>
+</body>
+</html>

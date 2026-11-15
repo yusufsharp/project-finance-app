@@ -1,0 +1,28 @@
+{
+  "reports": [
+    "deployment",
+    "build",
+    "schema",
+    "create",
+    "cache",
+    "update",
+    "delete",
+    "events",
+    "networks",
+    "operations-filter",
+    "operations-nat",
+    "notifications-filter",
+    "notifications-nat",
+    "ipv6",
+    "allow-deny",
+    "fw-outage",
+    "ha-summary",
+    "database-ha",
+    "database-rejoin",
+    "broker-ha",
+    "backup",
+    "validation"
+  ],
+  "captured_at": "2026-11-15T19:49:45.133575+07:00",
+  "ha_finished_at": "2026-11-15T19:50:31.304169+07:00"
+}
